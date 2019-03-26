@@ -35,8 +35,6 @@ plot(stock_prices)
 
 ## we can see there is an upward trend, so we need to make our data stationary. 
 
-
-
 ```
 
 
@@ -79,6 +77,7 @@ par(mfrow = c(1,1))
 acf.stock <- acf(stock[c(1:breakpoint),], main = 'ACF Plot', lag.max = 100)
 pacf.stock <- pacf(stock[c(1:breakpoint),], main = 'PACF Plot', lag.max = 100)
 
+## Based on our PACF and ACF plots we can conclude that we have an ARIMA(0,1,1)
 ```
 
 ### Step 4: Build ARIMA Model
@@ -94,7 +93,7 @@ forecasted_series <- data.frame(Forecasted = numeric())
 
 #In the code given below, we first initialize a series which will store the actual returns and another series to store the forecasted returns.  In the For Loop, we first form the training dataset and the test dataset based on the dynamic breakpoint.
 
-#We call the arima function on the training dataset for which the order specified is (2, 0, 2). We use this fitted model to forecast the next data point by using the forecast.Arima function. The function is set at 99% confidence level. One can use the confidence level argument to enhance the model. We will be using the forecasted point estimate from the model. The “h” argument in the forecast function indicates the number of values that we want to forecast, in this case, the next day returns.
+#We call the arima function on the training dataset for which the order specified is (0, 1, 1). We use this fitted model to forecast the next data point by using the forecast.Arima function. The function is set at 99% confidence level. One can use the confidence level argument to enhance the model. We will be using the forecasted point estimate from the model. The “h” argument in the forecast function indicates the number of values that we want to forecast, in this case, the next day returns.
 
 #We can use the summary function to confirm the results of the ARIMA model are within acceptable limits. In the last part, we append every forecasted return and the actual return to the forecasted returns series and the actual returns series respectively.
 
@@ -105,7 +104,7 @@ stock_train = stock[1:b, ]
 stock_test = stock[(b+1):nrow(stock), ]
 
 # Summary of the ARIMA model using the determined (p,d,q) parameters
-fit = arima(stock_train, order = c(2, 0, 2),include.mean=FALSE)
+fit = arima(stock_train, order = c(0, 1, 1),include.mean=FALSE)
 
 
 # Forecasting the log returns
@@ -125,7 +124,7 @@ rm(Actual_return)
 ```
 
 ```{r}
-arima(stock_train, order = c(0, 0, 1),include.mean = FALSE)
+arima(stock_train, order = c(0, 1, 1),include.mean = FALSE)
 
 ```
 
