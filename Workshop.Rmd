@@ -89,6 +89,16 @@ Actual_series <- xts(0,as.Date("2017-12-01","%Y-%m-%d"))
 
 # Initialzing a dataframe for the forecasted return series
 forecasted_series <- data.frame(Forecasted = numeric())
+
+#Our objective is to forecast the entire returns series from breakpoint onwards. We will make use of the For Loop statement in R and within this loop we will forecast returns for each data point from the test dataset.
+
+#In the code given below, we first initialize a series which will store the actual returns and another series to store the forecasted returns.  In the For Loop, we first form the training dataset and the test dataset based on the dynamic breakpoint.
+
+#We call the arima function on the training dataset for which the order specified is (2, 0, 2). We use this fitted model to forecast the next data point by using the forecast.Arima function. The function is set at 99% confidence level. One can use the confidence level argument to enhance the model. We will be using the forecasted point estimate from the model. The “h” argument in the forecast function indicates the number of values that we want to forecast, in this case, the next day returns.
+
+#We can use the summary function to confirm the results of the ARIMA model are within acceptable limits. In the last part, we append every forecasted return and the actual return to the forecasted returns series and the actual returns series respectively.
+
+
 for (b in breakpoint:(nrow(stock)-1)) {
 
 stock_train = stock[1:b, ]
@@ -96,18 +106,10 @@ stock_test = stock[(b+1):nrow(stock), ]
 
 # Summary of the ARIMA model using the determined (p,d,q) parameters
 fit = arima(stock_train, order = c(2, 0, 2),include.mean=FALSE)
-summary(fit)
 
-# plotting a acf plot of the residuals
-acf(fit$residuals,main="Residuals plot")
 
 # Forecasting the log returns
 arima.forecast = forecast(fit, h = 1,level=99)
-summary(arima.forecast)
-
-# plotting the forecast
-par(mfrow=c(1,1))
-plot(arima.forecast, main = "ARIMA Forecast")
 
 # Creating a series of forecasted returns for the forecasted period
 forecasted_series = rbind(forecasted_series,arima.forecast$mean[1])
@@ -117,9 +119,6 @@ colnames(forecasted_series) = c("Forecasted")
 Actual_return = stock[(b+1),]
 Actual_series = c(Actual_series,xts(Actual_return))
 rm(Actual_return)
-
-print(stock_prices[(b+1),])
-print(stock_prices[(b+2),])
 
 }
 
