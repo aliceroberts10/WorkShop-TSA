@@ -125,7 +125,6 @@ rm(Actual_return)
 
 ```{r}
 arima(stock_train, order = c(0, 1, 1),include.mean = FALSE)
-
 ```
 
 
@@ -156,7 +155,7 @@ Accuracy_percentage <- sum(comparsion$Accuracy == 1)*100/length(comparsion$Accur
 print(Accuracy_percentage)
 
 #draw the qqnorm & qqline
-model <- arima(stock, order = c(0, 0, 1),include.mean = FALSE)
+model <- arima(stock, order = c(0, 1, 1),include.mean = FALSE)
 qqnorm(model$residuals)
 qqline(model$residuals)
 
